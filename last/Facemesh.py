@@ -7,6 +7,11 @@ import mediapipe as mp
 from scipy.spatial import distance as dis
 
 import pyttsx3
+from pygame import mixer
+
+
+mixer.init()
+sound = mixer.Sound('alarm.wav')
 
 
 def draw_landmarks(image, outputs, land_mark, color):
@@ -140,8 +145,10 @@ class VideoProcessor:
 
 				if cnt > 5:
 					# Closing the eyes
-					speech.say('Drowsy Alert: It Seems you are sleeping.. please wake up')
-					speech.runAndWait()
+					try:
+						sound.play()
+					except:  # isplaying = False
+						pass
 
 				draw_landmarks(image, outputs, UPPER_LOWER_LIPS, COLOR_BLUE)
 				draw_landmarks(image, outputs, LEFT_RIGHT_LIPS, COLOR_BLUE)
@@ -149,8 +156,10 @@ class VideoProcessor:
 				ratio_lips = get_aspect_ratio(image, outputs, UPPER_LOWER_LIPS, LEFT_RIGHT_LIPS)
 				if ratio_lips < 1.8:
 					# Open his mouth
-					speech.say('Drowsy Warning: You looks tired.. please take rest')
-					speech.runAndWait()
+					try:
+						sound.play()
+					except:  # isplaying = False
+						pass
 
 			cur_frame_count["cur"]=cnt
 			cv.imshow("FACE MESH", image)
