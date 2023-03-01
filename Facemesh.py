@@ -7,6 +7,11 @@ import mediapipe as mp
 from scipy.spatial import distance as dis
 
 import pyttsx3
+from pygame import mixer
+
+
+mixer.init()
+sound = mixer.Sound('alarm.wav')
 
 
 def draw_landmarks(image, outputs, land_mark, color):
@@ -42,8 +47,10 @@ def get_aspect_ratio(image, outputs, top_bottom, left_right):
 	right = landmark.landmark[left_right[1]]
 
 	left_right_dis = euclidean_distance(image, left, right)
+	aspect_ratio = 2
 
-	aspect_ratio = left_right_dis / top_bottom_dis
+	if top_bottom_dis>0:
+	  aspect_ratio = left_right_dis / top_bottom_dis
 
 	return aspect_ratio
 
@@ -87,20 +94,17 @@ face_model = face_mesh.FaceMesh(static_image_mode=STATIC_IMAGE,
 
 # capture = cv.VideoCapture(0)
 
-frame_count = 0
-min_frame = 6
-min_tolerance = 4.83
-mouth_open_mark = 1.8
+cur_frame_count = {"cur":0}
+min_frame = {"cur":6}
+min_tolerance =4.83
+mouth_open_mark = {"cur":1.8}
 
 speech = pyttsx3.init()
 
 
 
 class VideoProcessor:
-	frame_count = 0
-	min_frame = 6
-	min_tolerance = 4.83
-	mouth_open_mark = 1.8
+
 	def recv(self, frame):
 
 
@@ -108,6 +112,8 @@ class VideoProcessor:
 		frm = frame.to_ndarray(format="bgr24")
 		image = frm
 		result = True
+		cnt = cur_frame_count["cur"]
+
 
 		if result:
 			image_rgb = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -129,27 +135,33 @@ class VideoProcessor:
 
 				ratio = (ratio_left + ratio_right) / 2.0
 				print(ratio)
-				print(min_tolerance)
 
-				if ratio > min_tolerance:
-					frame_count += 1
+
+
+				if ratio > 4.83:
+					cnt += 1
 				else:
-					frame_count = 0
+					cnt = 0
 
-				if frame_count > min_frame:
+				if cnt > 5:
 					# Closing the eyes
-					speech.say('Drowsy Alert: It Seems you are sleeping.. please wake up')
-					speech.runAndWait()
+					try:
+						sound.play()
+					except:  # isplaying = False
+						pass
 
 				draw_landmarks(image, outputs, UPPER_LOWER_LIPS, COLOR_BLUE)
 				draw_landmarks(image, outputs, LEFT_RIGHT_LIPS, COLOR_BLUE)
 
 				ratio_lips = get_aspect_ratio(image, outputs, UPPER_LOWER_LIPS, LEFT_RIGHT_LIPS)
-				if ratio_lips < mouth_open_mark:
+				if ratio_lips < 1.8:
 					# Open his mouth
-					speech.say('Drowsy Warning: You looks tired.. please take rest')
-					speech.runAndWait()
+					try:
+						sound.play()
+					except:  # isplaying = False
+						pass
 
+			cur_frame_count["cur"]=cnt
 			cv.imshow("FACE MESH", image)
 
 
@@ -161,13 +173,15 @@ class VideoProcessor:
 
 		return av.VideoFrame.from_ndarray(frm, format='bgr24')
 
-frame_count = 0
-min_frame = 6
-min_tolerance = 4.83
-mouth_open_mark = 1.8
 
-webrtc_streamer(key="key", video_processor_factory=VideoProcessor,
+
+def main():
+	webrtc_streamer(key="key", video_processor_factory=VideoProcessor,
 				rtc_configuration=RTCConfiguration(
 					{"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 					)
 	)
+
+
+if __name__ == "__main__":
+    main()

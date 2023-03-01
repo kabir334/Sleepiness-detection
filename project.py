@@ -7,22 +7,25 @@ from keras.models import load_model
 import numpy as np
 from pygame import mixer
 import time
+from datetime import datetime
+from datetime import date
 
 mixer.init()
-sound = mixer.Sound('alarm.wav')
+sound = mixer.Sound('D:/250_project_27feb/Sleepiness-detection/last/alarm.wav')
 
-face = cv2.CascadeClassifier('haar cascade files/haarcascade_frontalface_alt.xml')
-leye = cv2.CascadeClassifier('haar cascade files/haarcascade_lefteye_2splits.xml')
-reye = cv2.CascadeClassifier('haar cascade files/haarcascade_righteye_2splits.xml')
+face = cv2.CascadeClassifier('D:/250_project_27feb/Sleepiness-detection/last/haar cascade files/haarcascade_frontalface_alt.xml')
+leye = cv2.CascadeClassifier('D:/250_project_27feb/Sleepiness-detection/last/haar cascade files/haarcascade_lefteye_2splits.xml')
+reye = cv2.CascadeClassifier('D:/250_project_27feb/Sleepiness-detection/last/haar cascade files/haarcascade_righteye_2splits.xml')
 
 lbl = ['Close', 'Open']
 
-model = load_model("models/cnncat2.h5")
+model = load_model("D:/250_project_27feb/Sleepiness-detection/last/models/cnncat2.h5")
 path = os.getcwd()
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 state = {"cnt": 0}
 state2 = {"score": 0}
+map_for_counter={'counter':10}
 score = 0
 thicc = 2
 rpred = [99]
@@ -95,10 +98,20 @@ class VideoProcessor:
             score = 0
         cv2.putText(img, 'Score:' + str(score), (100, height - 20), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
         if (score > 5):
-            # person is feeling sleepy so we beep the alarm
-            # cv2.imwrite(os.path.join(path,'image.jpg'),frame)
             try:
+                if score==6:
+                    now = datetime.now()
+                    current_time = now.strftime("%H:%M:%S")
+                    today = date.today()
+                    current_date=today.strftime("%m/%d/%y")
+                    file= open("D:/250_project_27feb/Sleepiness-detection/last/timer.txt", "a")
+                    file.write('\n')
+                    file.write(current_date)
+                    file.write(',')
+                    file.write(current_time)
+                    file.close()
                 sound.play()
+               # map_for_counter['counter']=map_for_counter['counter']+1
             except:  # isplaying = False
                 pass
             # cv2.rectangle(img,(0,0),(width,height),(0,0,255),thicc)
