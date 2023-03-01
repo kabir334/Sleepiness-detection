@@ -11,15 +11,15 @@ from datetime import datetime
 from datetime import date
 
 mixer.init()
-sound = mixer.Sound('D:/250_project_27feb/Sleepiness-detection/last/alarm.wav')
+sound = mixer.Sound('alarm.wav')
 
-face = cv2.CascadeClassifier('D:/250_project_27feb/Sleepiness-detection/last/haar cascade files/haarcascade_frontalface_alt.xml')
-leye = cv2.CascadeClassifier('D:/250_project_27feb/Sleepiness-detection/last/haar cascade files/haarcascade_lefteye_2splits.xml')
-reye = cv2.CascadeClassifier('D:/250_project_27feb/Sleepiness-detection/last/haar cascade files/haarcascade_righteye_2splits.xml')
+face = cv2.CascadeClassifier('haar cascade files/haarcascade_frontalface_alt.xml')
+leye = cv2.CascadeClassifier('haar cascade files/haarcascade_lefteye_2splits.xml')
+reye = cv2.CascadeClassifier('haar cascade files/haarcascade_righteye_2splits.xml')
 
 lbl = ['Close', 'Open']
 
-model = load_model("D:/250_project_27feb/Sleepiness-detection/last/models/cnncat2.h5")
+model = load_model("models/cnncat2.h5")
 path = os.getcwd()
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -104,7 +104,7 @@ class VideoProcessor:
                     current_time = now.strftime("%H:%M:%S")
                     today = date.today()
                     current_date=today.strftime("%m/%d/%y")
-                    file= open("D:/250_project_27feb/Sleepiness-detection/last/timer.txt", "a")
+                    file= open("timer.txt", "a")
                     file.write('\n')
                     file.write(current_date)
                     file.write(',')
