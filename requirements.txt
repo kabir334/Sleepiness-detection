@@ -2,14 +2,13 @@ streamlit
 pandas
 datetime
 streamlit_authenticator
-pickle
+pickle-mixin
 pathlib
 av
-cv2
+opencv-python
 mediapipe
 pyttsx3
 pygame
 streamlit_webrtc
-os
 keras.models
 numpy
