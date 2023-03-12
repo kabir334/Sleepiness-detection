@@ -1,0 +1,17 @@
+streamlit
+pandas
+datetime
+time
+streamlit_authenticator
+pickle
+pathlib
+av
+cv2
+mediapipe
+distance
+pyttsx3
+pygame
+streamlit_webrtc
+os
+keras.models
+numpy
