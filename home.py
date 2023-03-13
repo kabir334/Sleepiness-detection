@@ -78,11 +78,11 @@ if logins == "Login":
 
 # ---------------------Signup------------
 if logins == "SignUp":
-    usname=st.text_input("Enter your user name:")
-    pas= st.text_input("Set a password:",type="password")
-    reg=st.button("Create account")
+    usname = st.text_input("Enter your user name:")
+    pas = st.text_input("Set a password:")
+    reg = st.button("Create account")
     if reg:
-        if not usname or not pas :
+        if not usname or not pas:
             st.warning("Please give username/password")
         else:
             usernames.append(usname)
