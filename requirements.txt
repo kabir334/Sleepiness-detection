@@ -12,3 +12,5 @@ pygame
 streamlit_webrtc
 keras.models
 numpy
+tensorflow
+scipy
